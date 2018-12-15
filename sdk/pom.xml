@@ -8,7 +8,7 @@
 	<name>hexaturn-solver-sdk</name>
 
 	<parent>
-		<groupId>hexaturn-solver</groupId>
+		<groupId>org.shaba.hexaturn</groupId>
 		<artifactId>hexaturn-solver</artifactId>
 		<version>1.0.0</version>
 	</parent>

@@ -9,15 +9,15 @@
 	<name>hexaturn-solver-service</name>
 
 	<parent>
-		<groupId>org.shaba.adv</groupId>
-		<artifactId>adventure-map-utility</artifactId>
-		<version>1.0.0</version>
-	</parent>
+        <groupId>org.shaba.hexaturn</groupId>
+        <artifactId>hexaturn-solver</artifactId>
+        <version>1.0.0</version>
+    </parent>
 
 	<dependencies>
 		<!-- Runtime -->
 		<dependency>
-			<groupId>hexaturn-solver</groupId>
+			<groupId>org.shaba.hexaturn</groupId>
 			<artifactId>hexaturn-solver-sdk</artifactId>
 			<version>${project.version}</version>
 		</dependency>
