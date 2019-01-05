@@ -15,14 +15,24 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.github.Hexworks.mixite</groupId>
+			<artifactId>mixite.core-jvm</artifactId>
+		</dependency>
+
+		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 		</dependency>
 
-            <dependency>
-                <groupId>es.usc.citius.hipster</groupId>
-                <artifactId>hipster-core</artifactId>
-            </dependency>
+		<dependency>
+			<groupId>one.util</groupId>
+			<artifactId>streamex</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>es.usc.citius.hipster</groupId>
+			<artifactId>hipster-core</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.hateoas</groupId>
