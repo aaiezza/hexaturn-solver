@@ -3,7 +3,6 @@
  */
 package com.shaba.hexaturn;
 
-import org.assertj.core.util.Lists;
 import org.hexworks.mixite.core.api.HexagonOrientation;
 import org.hexworks.mixite.core.api.HexagonalGridBuilder;
 import org.hexworks.mixite.core.api.HexagonalGridLayout;
@@ -29,8 +28,8 @@ public class HexaturnBoardTest
             .setOrientation( HexagonOrientation.FLAT_TOP )
             .setGridLayout( HexagonalGridLayout.RECTANGULAR )
             .setRadius( 2.0 )
-            .setGridHeight( 5 )
-            .setGridWidth( 7 ) );
+            .setGridWidth( 7 )
+            .setGridHeight( 5 ) );
     }
 
     @Test
@@ -38,10 +37,11 @@ public class HexaturnBoardTest
     {
         final long total = StreamEx.of( board.getGrid().getHexagons().iterator() )
             .peek( hex -> {
-                System.out.println(
-                    Lists.newArrayList( hex.getGridX(), hex.getGridY(), hex.getGridZ() ) );
                 hex.setSatelliteData( HexaturnSatelliteData.BORDER_HEX );
-                System.out.println( hex.getSatelliteData() );
+                System.out.printf( "[%2d, %2d] %s %s%n",
+                    hex.getGridX(), hex.getGridY(),
+                    hex.getId(),
+                    hex.getSatelliteData() );
             } )
             .count();
         

@@ -7,7 +7,5 @@ package com.shaba.hexaturn;
  * @author Alessandro Aiezza II
  *
  */
-public interface Occupant
-{
-    public boolean isPassable();
-}
+public class DecoyGoal implements EnemyAttractingOccupant
+{}

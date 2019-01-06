@@ -30,7 +30,7 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
 
     public boolean getPassable()
     {
-        return passable && !occupant.isPresent();
+        return passable && occupant.map(Occupant::isPassable).orElse(true);
     }
 
     public boolean getOpaque()

@@ -3,13 +3,33 @@
  */
 package com.shaba.hexaturn;
 
+import lombok.AccessLevel;
+
 /**
  * @author Alessandro Aiezza II
  *
  */
-public interface Enemy extends Occupant
+@lombok.Data
+@lombok.AllArgsConstructor ( access = AccessLevel.PRIVATE )
+@lombok.Builder ( toBuilder = true )
+public class Enemy implements Occupant
 {
-    public default int getMovesPerTurn() {
-        return 1;
+    private final int     movesPerTurn;
+    private final boolean frozen;
+
+    public Enemy thaw()
+    {
+        return toBuilder().frozen( false ).build();
+    }
+
+    public Enemy freeze()
+    {
+        return toBuilder().frozen( true ).build();
+    }
+
+    @Override
+    public boolean isPassable()
+    {
+        return false;
     }
 }

@@ -7,7 +7,11 @@ package com.shaba.hexaturn;
  * @author Alessandro Aiezza II
  *
  */
-public interface Occupant
+public interface EnemyAttractingOccupant extends Occupant
 {
-    public boolean isPassable();
+    @Override
+    public default boolean isPassable()
+    {
+        return true;
+    }
 }
