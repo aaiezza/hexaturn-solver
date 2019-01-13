@@ -3,6 +3,8 @@
  */
 package com.shaba.hexaturn;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.hexworks.mixite.core.api.HexagonOrientation;
 import org.hexworks.mixite.core.api.HexagonalGridBuilder;
 import org.hexworks.mixite.core.api.HexagonalGridLayout;
@@ -20,6 +22,8 @@ import one.util.streamex.StreamEx;
 public class HexaturnBoardTest
 {
     private HexaturnBoard board;
+    private int width  = 7;
+    private int height = 7;
 
     @Before
     public void setup()
@@ -28,19 +32,23 @@ public class HexaturnBoardTest
             .setOrientation( HexagonOrientation.FLAT_TOP )
             .setGridLayout( HexagonalGridLayout.RECTANGULAR )
             .setRadius( 2.0 )
-            .setGridWidth( 7 )
-            .setGridHeight( 5 ) );
+            .setGridWidth( width )
+            .setGridHeight( height ) );
     }
 
     @Test
     public void testBoard()
     {
+        final AtomicInteger count = new AtomicInteger();
         final long total = StreamEx.of( board.getGrid().getHexagons().iterator() )
             .peek( hex -> {
                 hex.setSatelliteData( HexaturnSatelliteData.BORDER_HEX );
-                System.out.printf( "[%2d, %2d] %s %s%n",
-                    hex.getGridX(), hex.getGridY(),
-                    hex.getId(),
+
+                System.out.printf( "%2d | [%2d, %2d, %2d] %s%n",
+                    count.getAndIncrement(),
+                    hex.getGridX(),
+                    hex.getGridY(),
+                    hex.getGridZ(),
                     hex.getSatelliteData() );
             } )
             .count();

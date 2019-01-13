@@ -5,8 +5,6 @@ package com.shaba.hexaturn.util;
 
 import java.util.Map;
 
-import org.hexworks.mixite.core.api.CubeCoordinate;
-
 import com.shaba.hexaturn.HexaturnSatelliteData;
 
 /**
@@ -15,7 +13,7 @@ import com.shaba.hexaturn.HexaturnSatelliteData;
  */
 public interface BoardStringConverter
 {
-    public Map<CubeCoordinate, HexaturnSatelliteData> convertBoardCode(
+    public Map<Integer, HexaturnSatelliteData> convertBoardCode(
             final int width,
             final int height,
             final String boardCode );
@@ -23,5 +21,5 @@ public interface BoardStringConverter
     public String convertBoardData(
             final int width,
             final int height,
-            final Map<CubeCoordinate, HexaturnSatelliteData> boardData );
+            final Map<Integer, HexaturnSatelliteData> boardData );
 }

@@ -8,10 +8,4 @@ package com.shaba.hexaturn;
  *
  */
 public class Goal implements EnemyAttractingOccupant
-{
-    @Override
-    public boolean isPassable()
-    {
-        return true;
-    }
-}
+{}

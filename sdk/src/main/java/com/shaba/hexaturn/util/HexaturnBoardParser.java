@@ -8,7 +8,6 @@ import static com.shaba.hexaturn.HexaturnSatelliteData.BORDER_HEX;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.hexworks.mixite.core.api.CubeCoordinate;
 import org.hexworks.mixite.core.api.Hexagon;
 import org.hexworks.mixite.core.api.HexagonOrientation;
 import org.hexworks.mixite.core.api.HexagonalGridBuilder;
@@ -18,6 +17,7 @@ import com.shaba.hexaturn.HexaturnBoard;
 import com.shaba.hexaturn.HexaturnSatelliteData;
 
 import lombok.AccessLevel;
+import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
 /**
@@ -27,7 +27,7 @@ import one.util.streamex.StreamEx;
  *
  */
 @lombok.Data
-@lombok.AllArgsConstructor ( access = AccessLevel.PROTECTED )
+@lombok.AllArgsConstructor ( access = AccessLevel.PRIVATE )
 @lombok.Builder
 public class HexaturnBoardParser
 {
@@ -55,11 +55,11 @@ public class HexaturnBoardParser
 
     private HexaturnBoard applyConfiguration( final HexaturnBoard board )
     {
-        final Map<CubeCoordinate, HexaturnSatelliteData> config = converter.get()
+        final Map<Integer, HexaturnSatelliteData> config = converter.get()
                 .convertBoardCode(width, height, boardCode);
 
-        StreamEx.of( board.iterator() )
-                .mapToEntry( hex -> config.getOrDefault( hex.getCubeCoordinate(), BORDER_HEX ) )
+        EntryStream.of( StreamEx.of( board.iterator() ).toList() ).invert()
+                .mapValues( hexIndex -> config.getOrDefault( hexIndex, BORDER_HEX ) )
                 .forKeyValue( Hexagon::setSatelliteData );
 
         return board;
