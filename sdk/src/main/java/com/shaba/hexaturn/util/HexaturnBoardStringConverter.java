@@ -9,6 +9,7 @@ import static java.util.stream.Collectors.joining;
 import java.util.Map;
 import java.util.Optional;
 import java.util.PrimitiveIterator.OfInt;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -72,7 +73,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
 
             final HexaturnSatelliteDataBuilder dataBuilder = HexaturnSatelliteData.builder();
 
-            final OfInt contents = hex[1].chars().iterator();
+            final OfInt contents = ( hex.length > 1 ? hex[1] : "" ).chars().iterator();
             while ( contents.hasNext() )
             {
                 char c = (char) contents.next().intValue();
@@ -101,7 +102,8 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     .map( Integer::parseInt )
                     .map( l -> l - index )
                     .orElse( 1 );
-            return StreamEx.generate( () -> new StringHex( index, dataBuilder.build() ) ).limit( repeat );
+            final AtomicInteger indexCounter = new AtomicInteger( index );
+            return StreamEx.generate( () -> new StringHex( indexCounter.getAndIncrement(), dataBuilder.build() ) ).limit( repeat );
         }
 
         private static String parseUntilSemicolon( final OfInt iter )

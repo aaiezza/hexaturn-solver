@@ -11,7 +11,6 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.shaba.hexaturn.HexaturnBoard;
-import com.shaba.hexaturn.HexaturnSatelliteData;
 
 import one.util.streamex.StreamEx;
 
@@ -26,7 +25,7 @@ public class HexaturnBoardParserTest
     
     private int width = 3;
     private int height = 5;
-    private String boardCode = "1:e1;,3::9,10:G;!b,11:,12:!b,14:!b";
+    private String boardCode = "1:ef2;,3:l2;:9,10:G;!b,11:,12:!b,14:!b";
 
     @Before
     public void setup()
@@ -46,8 +45,6 @@ public class HexaturnBoardParserTest
 
         final AtomicInteger count = new AtomicInteger();
         final long total = StreamEx.of( board.getGrid().getHexagons().iterator() ).peek( hex -> {
-            hex.setSatelliteData( HexaturnSatelliteData.BORDER_HEX );
-
             System.out.printf( "%2d | [%2d, %2d, %2d] %s%n", count.getAndIncrement(),
                 hex.getGridX(), hex.getGridY(), hex.getGridZ(), hex.getSatelliteData() );
         } ).count();
