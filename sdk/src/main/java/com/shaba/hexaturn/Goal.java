@@ -9,4 +9,10 @@ package com.shaba.hexaturn;
  */
 @lombok.Data
 public class Goal implements EnemyAttractingOccupant
-{}
+{
+    @Override
+    public String toString()
+    {
+        return "G";
+    }
+}

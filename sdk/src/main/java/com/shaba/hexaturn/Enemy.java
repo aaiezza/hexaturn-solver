@@ -3,6 +3,8 @@
  */
 package com.shaba.hexaturn;
 
+import static java.lang.String.format;
+
 import lombok.AccessLevel;
 
 /**
@@ -14,8 +16,16 @@ import lombok.AccessLevel;
 @lombok.Builder ( toBuilder = true )
 public class Enemy implements Occupant
 {
-    private final int     movesPerTurn;
-    private final boolean frozen;
+    @lombok.Builder.Default
+    private final int     movesPerTurn = 1;
+    @lombok.Builder.Default
+    private final boolean frozen       = false;
+
+    public Enemy()
+    {
+        movesPerTurn = 1;
+        frozen = false;
+    }
 
     public Enemy thaw()
     {
@@ -31,5 +41,18 @@ public class Enemy implements Occupant
     public boolean isPassable()
     {
         return false;
+    }
+
+    @Override
+    public String toString()
+    {
+        final StringBuilder out = new StringBuilder( "e" );
+
+        if ( frozen )
+            out.append( "f" );
+
+        out.append( format( "%d;", movesPerTurn ) );
+
+        return out.toString();
     }
 }

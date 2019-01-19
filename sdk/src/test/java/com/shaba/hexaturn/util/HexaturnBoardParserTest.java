@@ -44,10 +44,15 @@ public class HexaturnBoardParserTest
         final HexaturnBoard board = parser.parseBoard();
 
         final AtomicInteger count = new AtomicInteger();
-        final long total = StreamEx.of( board.getGrid().getHexagons().iterator() ).peek( hex -> {
-            System.out.printf( "%2d | [%2d, %2d, %2d] %s%n", count.getAndIncrement(),
-                hex.getGridX(), hex.getGridY(), hex.getGridZ(), hex.getSatelliteData() );
-        } ).count();
+        final long total = StreamEx.of( board.getGrid().getHexagons().iterator() )
+                .peek( hex -> {
+                    System.out.printf( "%2d | [%2d, %2d, %2d] %s%n",
+                        count.getAndIncrement(),
+                        hex.getGridX(),
+                        hex.getGridY(),
+                        hex.getGridZ(),
+                        hex.getSatelliteData() );
+                } ).count();
 
         System.out.println( total );
     }

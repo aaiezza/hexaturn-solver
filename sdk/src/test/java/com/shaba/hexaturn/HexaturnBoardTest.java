@@ -3,11 +3,10 @@
  */
 package com.shaba.hexaturn;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.hexworks.mixite.core.api.HexagonOrientation;
-import org.hexworks.mixite.core.api.HexagonalGridBuilder;
-import org.hexworks.mixite.core.api.HexagonalGridLayout;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,22 +27,17 @@ public class HexaturnBoardTest
     @Before
     public void setup()
     {
-        board = new HexaturnBoard( new HexagonalGridBuilder<HexaturnSatelliteData>()
-            .setOrientation( HexagonOrientation.FLAT_TOP )
-            .setGridLayout( HexagonalGridLayout.RECTANGULAR )
-            .setRadius( 2.0 )
-            .setGridWidth( width )
-            .setGridHeight( height ) );
+        board = HexaturnBoard.builder()
+                    .width( width )
+                    .height( height ).build();
     }
 
     @Test
     public void testBoard()
     {
         final AtomicInteger count = new AtomicInteger();
-        final long total = StreamEx.of( board.getGrid().getHexagons().iterator() )
+        final long total = StreamEx.of( board.iterator() )
             .peek( hex -> {
-                hex.setSatelliteData( HexaturnSatelliteData.BORDER_HEX );
-
                 System.out.printf( "%2d | [%2d, %2d, %2d] %s%n",
                     count.getAndIncrement(),
                     hex.getGridX(),
@@ -52,7 +46,8 @@ public class HexaturnBoardTest
                     hex.getSatelliteData() );
             } )
             .count();
-        
+
         System.out.println( total );
+        assertThat( total ).isEqualTo( width * height );
     }
 }
