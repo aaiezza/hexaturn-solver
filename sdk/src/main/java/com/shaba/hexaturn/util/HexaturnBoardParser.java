@@ -4,21 +4,17 @@
 package com.shaba.hexaturn.util;
 
 import static com.shaba.hexaturn.HexaturnSatelliteData.BORDER_HEX;
+import static java.util.stream.Collectors.toList;
 
 import java.util.Map;
 import java.util.function.Supplier;
-
-import org.hexworks.mixite.core.api.Hexagon;
-import org.hexworks.mixite.core.api.HexagonOrientation;
-import org.hexworks.mixite.core.api.HexagonalGridBuilder;
-import org.hexworks.mixite.core.api.HexagonalGridLayout;
+import java.util.stream.IntStream;
 
 import com.shaba.hexaturn.HexaturnBoard;
+import com.shaba.hexaturn.HexaturnBoard.HexaturnBoardBuilder;
 import com.shaba.hexaturn.HexaturnSatelliteData;
 
 import lombok.AccessLevel;
-import one.util.streamex.EntryStream;
-import one.util.streamex.StreamEx;
 
 /**
  * A parser to take a string of non-bordering hexaturn board data.
@@ -37,39 +33,27 @@ public class HexaturnBoardParser
     @lombok.Builder.Default
     private final Supplier<HexaturnBoardStringConverter> converter = HexaturnBoardStringConverter::new;
 
-    private HexagonalGridBuilder<HexaturnSatelliteData> generateHexagonalGridBuilder()
+    private HexaturnBoardBuilder generateHexaturnBoardBuilder()
     {
-        return new HexagonalGridBuilder<HexaturnSatelliteData>()
-                .setOrientation( HexagonOrientation.FLAT_TOP )
-                .setGridLayout( HexagonalGridLayout.RECTANGULAR )
-                .setRadius( 2.0 )
-                .setGridWidth( width )
-                .setGridHeight( height );
+        return HexaturnBoard.builder()
+                .width( width )
+                .height( height );
     }
 
-    private HexaturnBoard initializeBoard( final HexaturnBoard board )
-    {
-        board.forEach( hex -> hex.setSatelliteData( HexaturnSatelliteData.BORDER_HEX ) );
-        return board;
-    }
-
-    private HexaturnBoard applyConfiguration( final HexaturnBoard board )
+    private HexaturnBoard applyConfiguration( final HexaturnBoardBuilder boardBuilder )
     {
         final Map<Integer, HexaturnSatelliteData> config = converter.get()
                 .convertBoardCode(width, height, boardCode);
 
-        EntryStream.of( StreamEx.of( board.iterator() ).toList() ).invert()
-                .mapValues( hexIndex -> config.getOrDefault( hexIndex, BORDER_HEX ) )
-                .forKeyValue( Hexagon::setSatelliteData );
+        boardBuilder.data( IntStream.range( 0, width * height )
+            .mapToObj( hexIndex -> config.getOrDefault( hexIndex, BORDER_HEX ) )
+            .collect( toList() ));
 
-        return board;
+        return boardBuilder.build();
     }
 
     public final HexaturnBoard parseBoard()
     {
-        final HexaturnBoard board = new HexaturnBoard( generateHexagonalGridBuilder() );
-        initializeBoard( board );
-        applyConfiguration( board );
-        return board;
+        return applyConfiguration( generateHexaturnBoardBuilder() );
     }
 }

@@ -15,12 +15,12 @@ import java.util.stream.Stream;
 
 import com.shaba.hexaturn.DecoyGoal;
 import com.shaba.hexaturn.Enemy;
-import com.shaba.hexaturn.Goal;
 import com.shaba.hexaturn.HexaturnSatelliteData;
 import com.shaba.hexaturn.HexaturnSatelliteData.HexaturnSatelliteDataBuilder;
 import com.shaba.hexaturn.Occupant;
 
 import lombok.AccessLevel;
+import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
 /**
@@ -42,7 +42,6 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     .frozen( frozen )
                     .build();
         }),
-        GOAL("G", code -> new Goal()),
         DECOY_GOAL("D", code -> new DecoyGoal());
 
         private final String code;
@@ -88,11 +87,15 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     dataBuilder.blockable( hasAttribute );
                     break;
                 case 'l':
-                    dataBuilder.movementCost( parseIntUntilSemicolon(contents) );
+                    dataBuilder.blocksBeforeBlocked( parseIntUntilSemicolon(contents) );
+                    break;
+                case 'X':
+                    dataBuilder.blocksBeforeBlocked( 0 );
                     break;
                 default:
-                    dataBuilder.occupant( OccupantCode.parseCode( c )
-                        .map( oc -> oc.makeOccupant( parseUntilSemicolon(contents) ) ) );
+                    OccupantCode.parseCode( c )
+                        .map( oc -> oc.makeOccupant( parseUntilSemicolon(contents) ) )
+                        .ifPresent( dataBuilder::occupant );
                 }
             }
 
@@ -100,7 +103,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     .filter( h -> h.length > 2 )
                     .map( h -> h[2] )
                     .map( Integer::parseInt )
-                    .map( l -> l - index )
+                    .map( l -> l - index + 1 )
                     .orElse( 1 );
             final AtomicInteger indexCounter = new AtomicInteger( index );
             return StreamEx.generate( () -> new StringHex( indexCounter.getAndIncrement(), dataBuilder.build() ) ).limit( repeat );
@@ -165,9 +168,17 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
             final int height,
             final String boardCode )
     {
+        return convertBoardCodeStream( width, height, boardCode ).toImmutableMap();
+    }
+
+    public EntryStream<Integer, HexaturnSatelliteData> convertBoardCodeStream(
+            final int width,
+            final int height,
+            final String boardCode )
+    {
         return StreamEx.of( boardCode.split( "," ) )
-            .flatMap(StringHex::parse)
-            .toMap(StringHex::getIndex, StringHex::getData );
+                .flatMap( StringHex::parse )
+                .mapToEntry( StringHex::getIndex, StringHex::getData );
     }
 
     @Override
@@ -176,6 +187,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
             final int height,
             final Map<Integer, HexaturnSatelliteData> boardData )
     {
+        // TODO
         return null;
     }
 }

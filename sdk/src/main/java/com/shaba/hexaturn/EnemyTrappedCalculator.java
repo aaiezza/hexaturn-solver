@@ -7,6 +7,7 @@ package com.shaba.hexaturn;
  * @author Alessandro Aiezza II
  *
  */
-@lombok.Data
-public class Goal implements EnemyAttractingOccupant
-{}
+public interface EnemyTrappedCalculator
+{
+    public boolean allEnemiesTrapped( final HexaturnBoard board );
+}

@@ -22,7 +22,7 @@ import one.util.streamex.StreamEx;
 public class HexaturnBoardParserTest
 {
     private HexaturnBoardParser parser;
-    
+
     private int width = 3;
     private int height = 5;
     private String boardCode = "1:ef2;,3:l2;:9,10:G;!b,11:,12:!b,14:!b";
@@ -44,10 +44,15 @@ public class HexaturnBoardParserTest
         final HexaturnBoard board = parser.parseBoard();
 
         final AtomicInteger count = new AtomicInteger();
-        final long total = StreamEx.of( board.getGrid().getHexagons().iterator() ).peek( hex -> {
-            System.out.printf( "%2d | [%2d, %2d, %2d] %s%n", count.getAndIncrement(),
-                hex.getGridX(), hex.getGridY(), hex.getGridZ(), hex.getSatelliteData() );
-        } ).count();
+        final long total = StreamEx.of( board.getGrid().getHexagons().iterator() )
+                .peek( hex -> {
+                    System.out.printf( "%2d | [%2d, %2d, %2d] %s%n",
+                        count.getAndIncrement(),
+                        hex.getGridX(),
+                        hex.getGridY(),
+                        hex.getGridZ(),
+                        hex.getSatelliteData() );
+                } ).count();
 
         System.out.println( total );
     }
