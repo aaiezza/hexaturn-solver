@@ -17,8 +17,10 @@ import org.hexworks.mixite.core.api.HexagonalGrid;
 import org.hexworks.mixite.core.api.HexagonalGridBuilder;
 import org.hexworks.mixite.core.api.HexagonalGridCalculator;
 import org.hexworks.mixite.core.api.HexagonalGridLayout;
+import org.hexworks.mixite.core.vendor.Maybe;
 
 import lombok.AccessLevel;
+import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
 /**
@@ -32,6 +34,7 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
 {
     private final HexagonalGrid<HexaturnSatelliteData>           grid;
     private final HexagonalGridCalculator<HexaturnSatelliteData> calculator;
+    private final EnemyTrappedCalculator                         enemyTrappedCalculator;
 
     @Override
     public Iterator<Hexagon<HexaturnSatelliteData>> iterator()
@@ -48,6 +51,40 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
                     .map( Hexagon::getSatelliteData )
                     .map( data -> data.orElse( BORDER_HEX ) )
                     .toImmutableList() );
+    }
+
+    public boolean allEnemiesTrapped()
+    {
+        return enemyTrappedCalculator.allEnemiesTrapped( this );
+    }
+
+    public int enemiesAtGoal()
+    {
+        return (int) StreamEx.of( iterator() )
+                .map( Hexagon::getSatelliteData )
+                .filter( Maybe::isPresent ).map( Maybe::get )
+                .filter( HexaturnSatelliteData::hasGoal )
+                .map( HexaturnSatelliteData::getOccupant )
+                .filter( Optional::isPresent ).map( Optional::get )
+                .filter( o -> o instanceof Enemy )
+                .count();
+    }
+
+    public boolean isTerminal()
+    {
+        return enemiesAtGoal() > 0 || allEnemiesTrapped();
+    }
+
+    public EntryStream<Hexagon<HexaturnSatelliteData>, HexaturnSatelliteData> streamSatelliteData()
+    {
+        return StreamEx.of( iterator() )
+                .mapToEntry( Hexagon::getSatelliteData )
+                .mapValues( sd -> sd.orElse( BORDER_HEX ) );
+    }
+
+    public int size()
+    {
+        return grid.getGridData().getGridWidth() * grid.getGridData().getGridHeight();
     }
 
     @Override
@@ -74,6 +111,7 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
                         .setOrientation( HexagonOrientation.FLAT_TOP )
                         .setGridLayout( HexagonalGridLayout.RECTANGULAR )
                         .setRadius( 2.0 );
+        private EnemyTrappedCalculator enemyTrappedCalculator = new EnemyCalculator();
 
         public HexaturnBoardBuilder width( final int width )
         {
@@ -112,10 +150,10 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
             this.calculator = gridBuilder.buildCalculatorFor( grid );
             StreamEx.of( grid.getHexagons().iterator() )
                 .zipWith( Optional.ofNullable( data )
-                    .map(  List::stream )
+                    .map( List::stream )
                     .orElseGet( this::borderStream ) )
                 .forKeyValue( Hexagon::setSatelliteData );
-            return new HexaturnBoard( grid, calculator );
+            return new HexaturnBoard( grid, calculator, enemyTrappedCalculator );
         }
 
         private Stream<HexaturnSatelliteData> borderStream()

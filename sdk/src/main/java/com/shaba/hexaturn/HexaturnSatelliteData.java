@@ -53,7 +53,7 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
 
     public boolean isPassable()
     {
-        return occupant.map( Occupant::isPassable ).orElse( passable && blocksBeforeBlocked <= 0 );
+        return occupant.map( Occupant::isPassable ).orElse( passable && blocksBeforeBlocked > 0 );
     }
 
     public boolean canBlock()
@@ -66,6 +66,16 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
     public double getMovementCost()
     {
         return blocksBeforeBlocked > 0 ? 1 / blocksBeforeBlocked : Double.MAX_VALUE;
+    }
+
+    private boolean isHasGoal()
+    {
+        return hasGoal();
+    }
+
+    public boolean hasGoal()
+    {
+        return hasGoal;
     }
 
     @Deprecated

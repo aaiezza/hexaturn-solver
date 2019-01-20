@@ -22,13 +22,14 @@ public class MoveCalculator implements NextMoveCalculator<HexaturnBoard>
     @Override
     public StreamEx<HexaturnBoard> calculateNextMoves( final HexaturnBoard board )
     {
-        return StreamEx.of( getBlockableHexes( board ) )
-                .mapToEntry( cc -> board.toBuilder().build() )
-                .invert()
-                .mapKeyValue( this::blockHexAtCoordinate )
-                .filter( Maybe::isPresent )
-                .map( Maybe::get )
-                .distinct();
+        return board.isTerminal() ? StreamEx.empty() :
+                StreamEx.of( getBlockableHexes( board ) )
+                    .mapToEntry( cc -> board.toBuilder().build() )
+                    .invert()
+                    .mapKeyValue( this::blockHexAtCoordinate )
+                    .filter( Maybe::isPresent )
+                    .map( Maybe::get )
+                    .distinct();
     }
 
     private StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )
