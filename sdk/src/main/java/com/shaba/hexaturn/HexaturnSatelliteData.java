@@ -107,7 +107,7 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
     public boolean attractsEnemy()
     {
         return occupant.map( o -> o.getClass().isInstance( EnemyAttractingOccupant.class ) )
-                .orElse( false );
+                .orElse( hasGoal );
     }
 
     public HexaturnSatelliteData block()
