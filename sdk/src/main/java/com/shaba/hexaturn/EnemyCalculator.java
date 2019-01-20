@@ -31,14 +31,15 @@ public class EnemyCalculator implements EnemyTrappedCalculator
                 .chain( this::filterAndMapEnemies )
                 .keys()
                 .allMatch( enemyHex ->
-                    hexesReachable( board, enemyHex )
-                        .stream().map( Hexagon::getSatelliteData )
+                    StreamEx.ofValues( hexesReachable( board, enemyHex ) )
+                        .flatMap( Set::stream )
+                        .map( Hexagon::getSatelliteData )
                         .filter( Maybe::isPresent ).map( Maybe::get )
                         .noneMatch( HexaturnSatelliteData::hasGoal )
                 );
     }
 
-    private Set<Hexagon<HexaturnSatelliteData>> hexesReachable(
+    private Map<Integer, Set<Hexagon<HexaturnSatelliteData>>> hexesReachable(
             final HexaturnBoard board,
             final Hexagon<HexaturnSatelliteData> start )
     {
@@ -65,7 +66,7 @@ public class EnemyCalculator implements EnemyTrappedCalculator
                         } );
                 } );
         }
-        return visited;
+        return fringes;
     }
 
     private EntryStream<Hexagon<HexaturnSatelliteData>, Enemy> filterAndMapEnemies(

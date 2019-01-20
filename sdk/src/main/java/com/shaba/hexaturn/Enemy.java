@@ -40,7 +40,7 @@ public class Enemy implements Occupant
     @Override
     public boolean isPassable()
     {
-        return false;
+        return frozen && movesPerTurn > 0;
     }
 
     @Override
