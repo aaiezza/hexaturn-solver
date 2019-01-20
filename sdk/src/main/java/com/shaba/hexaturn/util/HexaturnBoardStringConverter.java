@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import com.shaba.hexaturn.DecoyGoal;
 import com.shaba.hexaturn.Enemy;
-import com.shaba.hexaturn.Goal;
 import com.shaba.hexaturn.HexaturnSatelliteData;
 import com.shaba.hexaturn.HexaturnSatelliteData.HexaturnSatelliteDataBuilder;
 import com.shaba.hexaturn.Occupant;
@@ -43,7 +42,6 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     .frozen( frozen )
                     .build();
         }),
-        GOAL("G", code -> new Goal()),
         DECOY_GOAL("D", code -> new DecoyGoal());
 
         private final String code;
@@ -89,7 +87,10 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     dataBuilder.blockable( hasAttribute );
                     break;
                 case 'l':
-                    dataBuilder.movementCost( parseIntUntilSemicolon(contents) );
+                    dataBuilder.blocksBeforeBlocked( parseIntUntilSemicolon(contents) );
+                    break;
+                case 'X':
+                    dataBuilder.blocksBeforeBlocked( 0 );
                     break;
                 default:
                     OccupantCode.parseCode( c )

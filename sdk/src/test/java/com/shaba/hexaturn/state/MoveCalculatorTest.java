@@ -15,7 +15,6 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import com.shaba.hexaturn.Enemy;
-import com.shaba.hexaturn.Goal;
 import com.shaba.hexaturn.HexaturnBoard;
 import com.shaba.hexaturn.HexaturnSatelliteData;
 import com.shaba.hexaturn.HexaturnSatelliteData.HexaturnSatelliteDataBuilder;
@@ -54,7 +53,7 @@ public class MoveCalculatorTest
             BORDER_HEX::toBuilder,
             () -> sdb().occupant( Enemy::new ),
             this::sdb, this::sdb,
-            () -> sdb().occupant( Goal::new ) )
+            () -> sdb().hasGoal( true ) )
         .map( s -> s.get().build() )
         .chain( hexStream -> {
             final List<HexaturnSatelliteData> data = hexStream.toList();

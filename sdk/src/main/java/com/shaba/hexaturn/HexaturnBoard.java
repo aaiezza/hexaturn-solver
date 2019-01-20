@@ -111,7 +111,8 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
             this.grid = gridBuilder.build();
             this.calculator = gridBuilder.buildCalculatorFor( grid );
             StreamEx.of( grid.getHexagons().iterator() )
-                .zipWith( Optional.ofNullable( data.stream() )
+                .zipWith( Optional.ofNullable( data )
+                    .map(  List::stream )
                     .orElseGet( this::borderStream ) )
                 .forKeyValue( Hexagon::setSatelliteData );
             return new HexaturnBoard( grid, calculator );

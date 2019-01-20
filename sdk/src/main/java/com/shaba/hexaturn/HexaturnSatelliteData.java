@@ -20,7 +20,7 @@ import lombok.AccessLevel;
 public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contract.SatelliteData
 {
     public static final HexaturnSatelliteData BORDER_HEX   = 
-            new HexaturnSatelliteData( false, false, Double.MAX_VALUE, Optional.empty() ) 
+            new HexaturnSatelliteData( false, false, false, 0, Optional.empty() ) 
             { @Override public String toString() { return "BORDER_HEX"; }
             @Override
             public HexaturnSatelliteDataBuilder toBuilder()
@@ -36,11 +36,13 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
         };
 
     @lombok.Builder.Default
-    private final boolean                     blockable    = true;
+    private final boolean                     blockable           = true;
     @lombok.Builder.Default
-    private final boolean                     passable     = true;
+    private final boolean                     passable            = true;
     @lombok.Builder.Default
-    private final double                      movementCost = 1.0;
+    private final boolean                     hasGoal             = false;
+    @lombok.Builder.Default
+    private final int                         blocksBeforeBlocked = 1;
     private final Optional<Occupant>          occupant;
 
     @Deprecated
@@ -51,12 +53,19 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
 
     public boolean isPassable()
     {
-        return occupant.map( Occupant::isPassable ).orElse( passable );
+        return occupant.map( Occupant::isPassable ).orElse( passable && blocksBeforeBlocked <= 0 );
     }
 
     public boolean canBlock()
     {
-        return occupant.map( o -> false ).orElse( blockable );
+        return occupant.map( o -> false ).orElse( passable &&
+            blockable && blocksBeforeBlocked > 0 && !hasGoal );
+    }
+
+    @Override
+    public double getMovementCost()
+    {
+        return blocksBeforeBlocked > 0 ? 1 / blocksBeforeBlocked : Double.MAX_VALUE;
     }
 
     @Deprecated
@@ -93,7 +102,11 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
 
     public HexaturnSatelliteData block()
     {
-        return toBuilder().passable( false ).build();
+        if ( hasGoal )
+            return toBuilder().build();
+
+        final int bbb = blocksBeforeBlocked > 0 ? blocksBeforeBlocked - 1 : 0;
+        return toBuilder().blocksBeforeBlocked( bbb ).build();
     }
 
     @Override
@@ -107,8 +120,13 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
         if ( !passable )
             out.append( "!p" );
 
-        if ( movementCost != 1.0 )
-            out.append( String.format( "l%d;", (int) movementCost ) );
+        if ( blocksBeforeBlocked > 1 )
+            out.append( format( "l%d;", blocksBeforeBlocked ) );
+        else if ( blocksBeforeBlocked >= 0 && blocksBeforeBlocked != 1 )
+            out.append( "X" );
+
+        if ( hasGoal )
+            out.append( "G" );
 
         occupant.ifPresent( o -> out.append( format( "%s", o ) ) );
 
