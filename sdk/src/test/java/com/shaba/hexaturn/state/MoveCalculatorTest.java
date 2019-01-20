@@ -43,7 +43,9 @@ public class MoveCalculatorTest
     @Test
     public void shouldHaveTwoNextMoves()
     {
-        assertThat( moveCalculator.calculateNextMoves( board ).toList() ).hasSize( 2 );
+        assertThat( moveCalculator.calculateNextMoves( board ).toList() ).hasSize( 2 )
+                .satisfies( next -> next.forEach( System.out::println ) );
+        System.out.println(  );
     }
 
     private void buildBoard()

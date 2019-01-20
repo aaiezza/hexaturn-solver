@@ -117,7 +117,7 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
             return new HexaturnBoard( grid, calculator );
         }
 
-        public Stream<HexaturnSatelliteData> borderStream()
+        private Stream<HexaturnSatelliteData> borderStream()
         {
             return StreamEx.constant( BORDER_HEX,
                     gridBuilder.getGridWidth() *

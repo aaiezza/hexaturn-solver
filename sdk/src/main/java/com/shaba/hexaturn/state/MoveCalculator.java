@@ -3,8 +3,6 @@
  */
 package com.shaba.hexaturn.state;
 
-import java.util.Optional;
-
 import org.hexworks.mixite.core.api.CubeCoordinate;
 import org.hexworks.mixite.core.api.Hexagon;
 import org.hexworks.mixite.core.vendor.Maybe;
@@ -24,11 +22,13 @@ public class MoveCalculator implements NextMoveCalculator<HexaturnBoard>
     @Override
     public StreamEx<HexaturnBoard> calculateNextMoves( final HexaturnBoard board )
     {
-        return StreamEx.generate( board.toBuilder()::build )
-                .zipWith( getBlockableHexes( board ) )
+        return StreamEx.of( getBlockableHexes( board ) )
+                .mapToEntry( cc -> board.toBuilder().build() )
+                .invert()
                 .mapKeyValue( this::blockHexAtCoordinate )
-                .filter( Optional::isPresent )
-                .map( Optional::get );
+                .filter( Maybe::isPresent )
+                .map( Maybe::get )
+                .distinct();
     }
 
     private StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )
@@ -39,24 +39,22 @@ public class MoveCalculator implements NextMoveCalculator<HexaturnBoard>
                 .filterValues( HexaturnSatelliteData::canBlock ).keys();
     }
 
-    private Optional<HexaturnBoard> blockHexAtCoordinate(
+    private Maybe<HexaturnBoard> blockHexAtCoordinate(
             final HexaturnBoard nextBoard,
             final CubeCoordinate coordinate )
     {
         return nextBoard.getGrid().getByCubeCoordinate( coordinate )
                 .map( this::blockHex )
-                .map( hex -> nextBoard )
-                .fold( Optional::empty, Optional::of );
+                .map( hex -> nextBoard );
     }
 
-    private Optional<Hexagon<HexaturnSatelliteData>> blockHex( final Hexagon<HexaturnSatelliteData> hex )
+    private Maybe<Hexagon<HexaturnSatelliteData>> blockHex( final Hexagon<HexaturnSatelliteData> hex )
     {
         return hex.getSatelliteData()
                 .map( HexaturnSatelliteData::block )
                 .map( sd -> {
                     hex.setSatelliteData(sd);
                     return hex;
-                })
-                .fold( Optional::empty, Optional::of );
+                });
     }
 }

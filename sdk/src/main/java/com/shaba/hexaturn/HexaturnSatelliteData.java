@@ -41,7 +41,7 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
     private final boolean                     passable     = true;
     @lombok.Builder.Default
     private final double                      movementCost = 1.0;
-    private final Optional<Occupant>          occupant;//     = Optional.empty();
+    private final Optional<Occupant>          occupant;
 
     @Deprecated
     public boolean getPassable()
