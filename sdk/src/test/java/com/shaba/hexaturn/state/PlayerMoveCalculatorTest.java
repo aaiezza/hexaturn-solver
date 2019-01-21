@@ -26,26 +26,28 @@ import one.util.streamex.StreamEx;
  *
  */
 @RunWith ( MockitoJUnitRunner.StrictStubs.class )
-public class MoveCalculatorTest
+public class PlayerMoveCalculatorTest
 {
     private HexaturnBoard  board;
 
-    private MoveCalculator moveCalculator;
+    private PlayerMoveCalculator moveCalculator;
 
     @Before
     public void setup()
     {
         buildBoard();
-        moveCalculator = new MoveCalculator();
+        moveCalculator = new PlayerMoveCalculator();
     }
 
     @Test
     public void shouldHaveTwoNextMoves()
     {
         assertThat( moveCalculator.calculateNextMoves( board ).toList() ).hasSize( 2 )
-                .allSatisfy( next -> {
-                    System.out.println( next );
-                    assertThat( next.isTerminal() ).isEqualTo( true );
+                .allSatisfy( nextMove ->
+                {
+                    System.out.println( nextMove );
+                    assertThat( nextMove.getResultOfMoveSteps().map( HexaturnBoard::isTerminal ) )
+                            .hasValue( true );
                 } );
     }
 

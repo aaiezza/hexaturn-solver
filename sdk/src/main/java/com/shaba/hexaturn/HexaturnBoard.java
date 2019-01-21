@@ -111,7 +111,7 @@ public class HexaturnBoard implements Iterable<Hexagon<HexaturnSatelliteData>>
                         .setOrientation( HexagonOrientation.FLAT_TOP )
                         .setGridLayout( HexagonalGridLayout.RECTANGULAR )
                         .setRadius( 2.0 );
-        private EnemyTrappedCalculator enemyTrappedCalculator = new EnemyCalculator();
+        private EnemyTrappedCalculator enemyTrappedCalculator = new EnemyMoveCalculator();
 
         public HexaturnBoardBuilder width( final int width )
         {

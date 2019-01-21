@@ -17,10 +17,10 @@ import one.util.streamex.StreamEx;
  * @author Alessandro Aiezza II
  *
  */
-public class MoveCalculator implements NextMoveCalculator<HexaturnBoard>
+public class PlayerMoveCalculator implements NextMoveCalculator<HexaturnBoard, PlayerMove>
 {
     @Override
-    public StreamEx<HexaturnBoard> calculateNextMoves( final HexaturnBoard board )
+    public StreamEx<PlayerMove> calculateNextMoves( final HexaturnBoard board )
     {
         return board.isTerminal() ? StreamEx.empty() :
                 StreamEx.of( getBlockableHexes( board ) )
@@ -29,7 +29,8 @@ public class MoveCalculator implements NextMoveCalculator<HexaturnBoard>
                     .mapKeyValue( this::blockHexAtCoordinate )
                     .filter( Maybe::isPresent )
                     .map( Maybe::get )
-                    .distinct();
+                    .distinct()
+                    .map( b -> PlayerMove.builder().moveStep( b ).build() );
     }
 
     private StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )

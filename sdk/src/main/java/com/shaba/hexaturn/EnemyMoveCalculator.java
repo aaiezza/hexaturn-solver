@@ -3,14 +3,15 @@
  */
 package com.shaba.hexaturn;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.assertj.core.util.Sets;
 import org.hexworks.mixite.core.api.Hexagon;
 import org.hexworks.mixite.core.vendor.Maybe;
+
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
@@ -19,7 +20,7 @@ import one.util.streamex.StreamEx;
  * @author Alessandro Aiezza II
  *
  */
-public class EnemyCalculator implements EnemyTrappedCalculator
+public class EnemyMoveCalculator implements EnemyTrappedCalculator
 {
     @Override
     public boolean allEnemiesTrapped( final HexaturnBoard board )
@@ -39,14 +40,15 @@ public class EnemyCalculator implements EnemyTrappedCalculator
                 );
     }
 
-    private Map<Integer, Set<Hexagon<HexaturnSatelliteData>>> hexesReachable(
+    @SuppressWarnings ( "unchecked" )
+    public Map<Integer, Set<Hexagon<HexaturnSatelliteData>>> hexesReachable(
             final HexaturnBoard board,
             final Hexagon<HexaturnSatelliteData> start )
     {
         final Set<Hexagon<HexaturnSatelliteData>> visited = Sets.newHashSet();
         visited.add( start );
-        final Map<Integer, Set<Hexagon<HexaturnSatelliteData>>> fringes = new HashMap<>();
-        fringes.put(0, StreamEx.of( start ).toSet());
+        final Map<Integer, Set<Hexagon<HexaturnSatelliteData>>> fringes = Maps.newHashMap();
+        fringes.put( 0, Sets.newHashSet( start ) );
 
         for ( int i = 1; i < board.size(); i++ )
         {
