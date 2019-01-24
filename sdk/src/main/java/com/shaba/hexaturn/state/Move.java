@@ -7,43 +7,16 @@ import java.util.LinkedHashSet;
 
 import com.google.common.collect.Sets;
 import com.shaba.hexaturn.HexaturnBoard;
-import com.shaba.state.IMove;
-
-import one.util.streamex.StreamEx;
 
 /**
  * @author Alessandro Aiezza II
  */
 @lombok.Data
+@lombok.EqualsAndHashCode(callSuper = true)
 @lombok.Builder ( toBuilder = true )
-public class Move implements IMove<HexaturnBoard>
+public class Move extends AbstractMove
 {
     private final LinkedHashSet<Step<HexaturnBoard>> steps;
-
-    @Override
-    public int hashCode()
-    {
-        return getSteps().hashCode();
-    }
-
-    @Override
-    public boolean equals( final Object obj )
-    {
-        if ( this == obj )
-            return true;
-        if ( obj == null )
-            return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        final Move other = (Move) obj;
-        return Sets.symmetricDifference( getSteps(), other.getSteps() ).isEmpty();
-    }
-
-    @Override
-    public String toString()
-    {
-        return StreamEx.of( getSteps() ).joining( ", ", getClass().getSimpleName() + "[", "]" );
-    }
 
     public static final class MoveBuilder
     {

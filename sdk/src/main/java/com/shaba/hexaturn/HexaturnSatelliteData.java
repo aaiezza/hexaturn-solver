@@ -110,6 +110,11 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
                 .orElse( hasGoal );
     }
 
+    public boolean hasEnemy()
+    {
+        return occupant.map( o -> o.getClass().isInstance( Enemy.class ) ).orElse( false );
+    }
+
     public HexaturnSatelliteData block()
     {
         if ( hasGoal )
@@ -117,6 +122,13 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
 
         final int bbb = blocksBeforeBlocked > 0 ? blocksBeforeBlocked - 1 : 0;
         return toBuilder().blocksBeforeBlocked( bbb ).build();
+    }
+
+    public HexaturnSatelliteData removeEnemy()
+    {
+        return occupant.filter( o -> o.getClass().isInstance( Enemy.class ) )
+                .map( o -> toBuilder().clearOccupant().build() )
+                .orElseGet( toBuilder()::build );
     }
 
     @Override
@@ -158,6 +170,12 @@ public class HexaturnSatelliteData implements org.hexworks.mixite.core.api.contr
         public HexaturnSatelliteDataBuilder occupant( final Occupant occupant )
         {
             this.occupant = Optional.ofNullable( occupant );
+            return this;
+        }
+
+        public HexaturnSatelliteDataBuilder clearOccupant()
+        {
+            this.occupant = Optional.empty();
             return this;
         }
 

@@ -16,6 +16,7 @@ import com.shaba.hexaturn.Enemy;
 import com.shaba.hexaturn.EnemyTrappedCalculator;
 import com.shaba.hexaturn.HexaturnBoard;
 import com.shaba.hexaturn.HexaturnSatelliteData;
+import com.shaba.state.NextMoveCalculator;
 
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
@@ -24,7 +25,7 @@ import one.util.streamex.StreamEx;
  * @author Alessandro Aiezza II
  *
  */
-public class EnemyMoveCalculator implements EnemyTrappedCalculator
+public class EnemyMoveCalculator implements EnemyTrappedCalculator, NextMoveCalculator<HexaturnBoard, Move>
 {
     @Override
     public boolean allEnemiesTrapped( final HexaturnBoard board )
@@ -83,5 +84,21 @@ public class EnemyMoveCalculator implements EnemyTrappedCalculator
                 .mapValues( Optional::get )
                 .filterValues( o -> o instanceof Enemy )
                 .mapValues( Enemy.class::cast );
+    }
+    
+    public Optional<Move> calculateNextMove( final HexaturnBoard board )
+    {
+        // TODO
+        // Find the enemies, for each
+        //  find out if it can move (frozen? trapped? has movesPerTurn > 1)
+        //  find out where it wants to go (closest enemyAttractingHex)
+        //  
+        return board.isTerminal() ? Optional.empty() : null;
+    }
+
+    @Override
+    public StreamEx<Move> calculateNextMoves( final HexaturnBoard board )
+    {
+        return StreamEx.of( calculateNextMove( board ) );
     }
 }
