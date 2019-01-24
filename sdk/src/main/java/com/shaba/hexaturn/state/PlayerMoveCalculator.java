@@ -32,7 +32,7 @@ public class PlayerMoveCalculator implements NextMoveCalculator<HexaturnBoard, M
                         .build() );
     }
 
-    private StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )
+    protected StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )
     {
         return StreamEx.of( board.iterator() )
                 .mapToEntry( Hexagon::getCubeCoordinate, Hexagon::getSatelliteData )

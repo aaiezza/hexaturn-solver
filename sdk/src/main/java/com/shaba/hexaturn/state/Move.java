@@ -9,9 +9,10 @@ import com.google.common.collect.Sets;
 import com.shaba.hexaturn.HexaturnBoard;
 import com.shaba.state.IMove;
 
+import one.util.streamex.StreamEx;
+
 /**
  * @author Alessandro Aiezza II
- *
  */
 @lombok.Data
 @lombok.Builder ( toBuilder = true )
@@ -41,14 +42,9 @@ public class Move implements IMove<HexaturnBoard>
     @Override
     public String toString()
     {
-        final StringBuilder out = new StringBuilder(getClass().getSimpleName());
-        out.append( "\n" );
-
-        getSteps().forEach( out::append );
-
-        return out.toString();
+        return StreamEx.of( getSteps() ).joining( ", ", getClass().getSimpleName() + "[", "]" );
     }
-    
+
     public static final class MoveBuilder
     {
         private final LinkedHashSet<Step<HexaturnBoard>> steps = Sets.newLinkedHashSet();
