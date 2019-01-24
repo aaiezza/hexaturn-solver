@@ -46,7 +46,8 @@ public class PlayerMoveCalculatorTest
                 .allSatisfy( nextMove ->
                 {
                     System.out.println( nextMove );
-                    assertThat( nextMove.getResultOfMoveSteps().map( HexaturnBoard::isTerminal ) )
+                    System.out.println( moveCalculator.applyMove( board, nextMove ).get() );
+                    assertThat( moveCalculator.applyMove( board, nextMove ).toJavaOptional().map( HexaturnBoard::isTerminal ) )
                             .hasValue( true );
                 } );
     }

@@ -3,63 +3,38 @@
  */
 package com.shaba.hexaturn.state;
 
-import java.util.LinkedHashSet;
-import java.util.Optional;
+import java.util.Set;
 
-import com.google.common.collect.Sets;
+import org.assertj.core.util.Sets;
+
 import com.shaba.hexaturn.HexaturnBoard;
+import com.shaba.state.Move.Step;
 
 /**
  * @author Alessandro Aiezza II
  *
  */
-@lombok.Builder
-public class PlayerMove extends Move<HexaturnBoard>
+public class PlayerMove extends AbstractMove<Step<HexaturnBoard>>
 {
+    @lombok.Builder ( toBuilder = true )
+    public PlayerMove( final Set<Step<HexaturnBoard>> steps )
+    {
+        super( steps );
+    }
+
     public static final class PlayerMoveBuilder
     {
-        private final LinkedHashSet<HexaturnBoard> moveSteps = Sets.newLinkedHashSet();
+        private final Set<Step<HexaturnBoard>> steps = Sets.newHashSet();
 
-        public PlayerMoveBuilder moveStep( final HexaturnBoard board )
+        public PlayerMoveBuilder addStep( final Step<HexaturnBoard> step )
         {
-            Optional.ofNullable( board ).ifPresent( moveSteps::add );
+            steps.add( step );
             return this;
         }
-
-        public PlayerMove build()
+        
+        private PlayerMoveBuilder steps(final Set<Step<HexaturnBoard>> steps)
         {
-            final PlayerMove playerMove = new PlayerMove();
-            moveSteps.forEach( playerMove.getMoveSteps()::add );
-            return playerMove;
+            return this;
         }
-    }
-
-    @Override
-    public int hashCode()
-    {
-        return getResultOfMoveSteps().hashCode();
-    }
-
-    @Override
-    public boolean equals( final Object obj )
-    {
-        if ( this == obj )
-            return true;
-        if ( obj == null )
-            return false;
-        if ( getClass() != obj.getClass() )
-            return false;
-        final PlayerMove other = (PlayerMove) obj;
-        return getResultOfMoveSteps().equals( other.getResultOfMoveSteps() );
-    }
-
-    @Override
-    public String toString()
-    {
-        final StringBuilder out = new StringBuilder( "PlayerMove\n" );
-
-        getMoveSteps().forEach( out::append );
-
-        return out.toString();
     }
 }

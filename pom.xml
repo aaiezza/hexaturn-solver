@@ -23,11 +23,11 @@
 
 	<dependencyManagement>
 		<dependencies>
-            <dependency>
-                <groupId>com.github.Hexworks.mixite</groupId>
-                <artifactId>mixite.core-jvm</artifactId>
-                <version>2018.2.0-RELEASE</version>
-            </dependency>
+			<dependency>
+				<groupId>com.github.Hexworks.mixite</groupId>
+				<artifactId>mixite.core-jvm</artifactId>
+				<version>2018.2.0-RELEASE</version>
+			</dependency>
 
 			<dependency>
 				<groupId>org.xerial</groupId>
@@ -111,6 +111,12 @@
 				<groupId>one.util</groupId>
 				<artifactId>streamex</artifactId>
 				<version>${streamex.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.vavr</groupId>
+				<artifactId>vavr</artifactId>
+				<version>[0.10,0.20)</version>
 			</dependency>
 
 			<!-- Testing -->

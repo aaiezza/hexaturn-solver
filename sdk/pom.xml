@@ -44,6 +44,11 @@
 			<artifactId>guava</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>io.vavr</groupId>
+			<artifactId>vavr</artifactId>
+		</dependency>
+
 		<!-- Testing -->
 		<dependency>
 			<groupId>junit</groupId>

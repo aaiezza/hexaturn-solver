@@ -5,13 +5,13 @@ package com.shaba.state;
 
 import java.util.stream.Stream;
 
-import com.shaba.hexaturn.state.Move;
+import com.shaba.state.Move.Step;
 
 /**
  * @author Alessandro Aiezza II
  */
 @FunctionalInterface
-public interface NextMoveCalculator <T, M extends Move<? extends T>>
+public interface NextMoveCalculator <T, M extends Move<T, Step<T>>>
 {
     /**
      * M is some kind of collection of moves that end in the state that t will
