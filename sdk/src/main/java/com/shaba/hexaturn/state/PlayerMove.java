@@ -31,8 +31,8 @@ public class PlayerMove extends AbstractMove<Step<HexaturnBoard>>
             steps.add( step );
             return this;
         }
-        
-        private PlayerMoveBuilder steps(final Set<Step<HexaturnBoard>> steps)
+
+        private PlayerMoveBuilder steps( final Set<Step<HexaturnBoard>> steps )
         {
             return this;
         }

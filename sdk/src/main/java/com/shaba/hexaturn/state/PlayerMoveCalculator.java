@@ -24,10 +24,12 @@ public class PlayerMoveCalculator implements NextMoveCalculator<HexaturnBoard, P
     @Override
     public StreamEx<PlayerMove> calculateNextMoves( final HexaturnBoard board )
     {
-        return board.isTerminal() ? StreamEx.empty() : StreamEx.of( getBlockableHexes( board ) )
-                .mapToEntry( cc -> board.toBuilder().build() ).invert()
-                .mapKeyValue( ( b, cc ) -> PlayerMove.builder()
-                        .addStep( BlockHexStep.builder().coordinate( cc ).build() ).build() );
+        return board.isTerminal() ? StreamEx.empty() :
+            StreamEx.of( getBlockableHexes( board ) )
+                .map( cc -> PlayerMove.builder()
+                        .addStep( BlockHexStep.builder()
+                            .coordinate( cc ).build() )
+                        .build() );
     }
 
     private StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )

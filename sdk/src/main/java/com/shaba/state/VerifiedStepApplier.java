@@ -14,7 +14,7 @@ import io.vavr.control.Validation;
  * @author Alessandro Aiezza II
  *
  */
-public interface StepApplier <T, S extends Step<T>, V extends StepValidator<T, S>> extends StepValidator<T, S>
+public interface VerifiedStepApplier <T, S extends Step<T>> extends StepValidator<T, S>
 {
     public default Either<Seq<IllegalStepException>, T> applyStep( final T state, final S step )
     {

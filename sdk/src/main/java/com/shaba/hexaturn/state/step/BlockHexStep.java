@@ -17,7 +17,6 @@ import com.shaba.state.Move.Step;
 
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;
-import one.util.streamex.StreamEx;
 
 /**
  * @author Alessandro Aiezza II
@@ -35,9 +34,12 @@ public class BlockHexStep extends Step<HexaturnBoard>
             final HexaturnBoard board,
             final Step<HexaturnBoard> step )
     {
-        return Validation.combine( validatePassable( board, step ),
-            validateIsBlockable( board, step ), validateIsOccupied( board, step ),
-            validateIsNotGoal( board, step ), validateIsNotAlreadyBlocked( board, step ) )
+        return Validation.combine(
+            validatePassable( board, step ),
+            validateIsBlockable( board, step ),
+            validateIsOccupied( board, step ),
+            validateIsNotGoal( board, step ),
+            validateIsNotAlreadyBlocked( board, step ) )
                 .ap( ( a, b, c, d, e ) -> a );
     }
 
@@ -114,29 +116,24 @@ public class BlockHexStep extends Step<HexaturnBoard>
         return blockHexAtCoordinate( t.toBuilder().build(), coordinate ).get();
     }
 
-    private StreamEx<CubeCoordinate> getBlockableHexes( final HexaturnBoard board )
-    {
-        return StreamEx.of( board.iterator() )
-                .mapToEntry( Hexagon::getCubeCoordinate, Hexagon::getSatelliteData )
-                .filterValues( Maybe::isPresent ).mapValues( Maybe::get )
-                .filterValues( HexaturnSatelliteData::canBlock ).keys();
-    }
-
     private Maybe<HexaturnBoard> blockHexAtCoordinate(
             final HexaturnBoard nextBoard,
             final CubeCoordinate coordinate )
     {
-        return nextBoard.getGrid().getByCubeCoordinate( coordinate ).map( this::blockHex )
+        return nextBoard.getGrid().getByCubeCoordinate( coordinate )
+                .map( this::blockHex )
                 .map( hex -> nextBoard );
     }
 
     private Maybe<Hexagon<HexaturnSatelliteData>> blockHex(
             final Hexagon<HexaturnSatelliteData> hex )
     {
-        return hex.getSatelliteData().map( HexaturnSatelliteData::block ).map( sd -> {
-            hex.setSatelliteData( sd );
-            return hex;
-        } );
+        return hex.getSatelliteData()
+                .map( HexaturnSatelliteData::block )
+                .map( sd -> {
+                    hex.setSatelliteData( sd );
+                    return hex;
+                } );
     }
 
 }

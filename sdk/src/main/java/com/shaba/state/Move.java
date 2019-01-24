@@ -19,7 +19,7 @@ public interface Move <T, S extends Step<T>>
 {
     public Set<S> getSteps();
 
-    public static abstract class Step <T> implements StepApplier<T, Step<T>, StepValidator<T,Step<T>>>
+    public static abstract class Step <T> implements VerifiedStepApplier<T, Step<T>>
     {
         final Either<IllegalStepException, T> apply( final T t )
         {
