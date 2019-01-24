@@ -13,7 +13,7 @@ import org.hexworks.mixite.core.vendor.Maybe;
 import com.shaba.hexaturn.HexaturnBoard;
 import com.shaba.hexaturn.HexaturnSatelliteData;
 import com.shaba.state.IllegalStepException;
-import com.shaba.state.Move.Step;
+import com.shaba.state.IMove.Step;
 
 import io.vavr.collection.Seq;
 import io.vavr.control.Validation;

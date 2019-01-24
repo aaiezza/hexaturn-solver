@@ -19,6 +19,8 @@ import org.hexworks.mixite.core.api.HexagonalGridCalculator;
 import org.hexworks.mixite.core.api.HexagonalGridLayout;
 import org.hexworks.mixite.core.vendor.Maybe;
 
+import com.shaba.hexaturn.state.EnemyMoveCalculator;
+
 import lombok.AccessLevel;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;

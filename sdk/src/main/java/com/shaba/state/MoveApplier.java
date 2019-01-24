@@ -3,8 +3,6 @@
  */
 package com.shaba.state;
 
-import com.shaba.state.Move.Step;
-
 import io.vavr.collection.Seq;
 import io.vavr.collection.Vector;
 import io.vavr.control.Either;
@@ -14,7 +12,7 @@ import one.util.streamex.StreamEx;
  * @author Alessandro Aiezza II
  *
  */
-public interface MoveApplier <T, M extends Move<T, Step<T>>>
+public interface MoveApplier <T, M extends IMove<T>>
 {
     /**
      * By iteratively applying an ordered collection of steps to a model

@@ -4,7 +4,7 @@
 package com.shaba.hexaturn.state;
 
 import com.shaba.hexaturn.HexaturnBoard;
-import com.shaba.state.Move.Step;
+import com.shaba.state.IMove.Step;
 
 /**
  * @author Alessandro Aiezza II

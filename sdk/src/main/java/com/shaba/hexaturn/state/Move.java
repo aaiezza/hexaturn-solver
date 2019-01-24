@@ -3,22 +3,21 @@
  */
 package com.shaba.hexaturn.state;
 
-import java.util.Set;
+import java.util.LinkedHashSet;
 
 import com.google.common.collect.Sets;
 import com.shaba.hexaturn.HexaturnBoard;
-import com.shaba.state.Move;
-import com.shaba.state.Move.Step;
+import com.shaba.state.IMove;
 
 /**
  * @author Alessandro Aiezza II
  *
  */
 @lombok.Data
-public abstract class AbstractMove <S extends Step<HexaturnBoard>> implements Move<HexaturnBoard, S>
+@lombok.Builder ( toBuilder = true )
+public class Move implements IMove<HexaturnBoard>
 {
-    @lombok.Singular
-    protected final Set<S> steps;
+    private final LinkedHashSet<Step<HexaturnBoard>> steps;
 
     @Override
     public int hashCode()
@@ -26,7 +25,6 @@ public abstract class AbstractMove <S extends Step<HexaturnBoard>> implements Mo
         return getSteps().hashCode();
     }
 
-    @SuppressWarnings ( "unchecked" )
     @Override
     public boolean equals( final Object obj )
     {
@@ -36,7 +34,7 @@ public abstract class AbstractMove <S extends Step<HexaturnBoard>> implements Mo
             return false;
         if ( getClass() != obj.getClass() )
             return false;
-        final AbstractMove<S> other = (AbstractMove<S>) obj;
+        final Move other = (Move) obj;
         return Sets.symmetricDifference( getSteps(), other.getSteps() ).isEmpty();
     }
 
@@ -49,5 +47,21 @@ public abstract class AbstractMove <S extends Step<HexaturnBoard>> implements Mo
         getSteps().forEach( out::append );
 
         return out.toString();
+    }
+    
+    public static final class MoveBuilder
+    {
+        private final LinkedHashSet<Step<HexaturnBoard>> steps = Sets.newLinkedHashSet();
+
+        public MoveBuilder addStep( final Step<HexaturnBoard> step )
+        {
+            steps.add( step );
+            return this;
+        }
+
+        private MoveBuilder steps( final LinkedHashSet<Step<HexaturnBoard>> steps )
+        {
+            return this;
+        }
     }
 }

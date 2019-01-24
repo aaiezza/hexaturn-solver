@@ -19,14 +19,14 @@ import one.util.streamex.StreamEx;
  * @author Alessandro Aiezza II
  *
  */
-public class PlayerMoveCalculator implements NextMoveCalculator<HexaturnBoard, PlayerMove>, MoveApplier<HexaturnBoard, PlayerMove>
+public class PlayerMoveCalculator implements NextMoveCalculator<HexaturnBoard, Move>, MoveApplier<HexaturnBoard, Move>
 {
     @Override
-    public StreamEx<PlayerMove> calculateNextMoves( final HexaturnBoard board )
+    public StreamEx<Move> calculateNextMoves( final HexaturnBoard board )
     {
         return board.isTerminal() ? StreamEx.empty() :
             StreamEx.of( getBlockableHexes( board ) )
-                .map( cc -> PlayerMove.builder()
+                .map( cc -> Move.builder()
                         .addStep( BlockHexStep.builder()
                             .coordinate( cc ).build() )
                         .build() );

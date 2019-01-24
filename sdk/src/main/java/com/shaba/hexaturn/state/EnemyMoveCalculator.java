@@ -1,7 +1,7 @@
 /**
  *  COPYRIGHT (C) 2015 Alessandro Aiezza II. All Rights Reserved.
  */
-package com.shaba.hexaturn;
+package com.shaba.hexaturn.state;
 
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +12,10 @@ import org.hexworks.mixite.core.vendor.Maybe;
 
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.shaba.hexaturn.Enemy;
+import com.shaba.hexaturn.EnemyTrappedCalculator;
+import com.shaba.hexaturn.HexaturnBoard;
+import com.shaba.hexaturn.HexaturnSatelliteData;
 
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;

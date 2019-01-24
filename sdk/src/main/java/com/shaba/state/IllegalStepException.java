@@ -3,7 +3,7 @@
  */
 package com.shaba.state;
 
-import com.shaba.state.Move.Step;
+import com.shaba.state.IMove.Step;
 
 /**
  * @author Alessandro Aiezza II

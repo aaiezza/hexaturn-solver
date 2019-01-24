@@ -5,8 +5,6 @@ package com.shaba.state;
 
 import java.util.Set;
 
-import com.shaba.state.Move.Step;
-
 import io.vavr.control.Either;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -15,9 +13,9 @@ import io.vavr.control.Try;
  * @author Alessandro Aiezza II
  *
  */
-public interface Move <T, S extends Step<T>>
+public interface IMove <T>
 {
-    public Set<S> getSteps();
+    public Set<Step<T>> getSteps();
 
     public static abstract class Step <T> implements VerifiedStepApplier<T, Step<T>>
     {
