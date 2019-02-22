@@ -1,8 +1,11 @@
-# Compiled class file
-*.class
 
-# Log file
-*.log
+# Generated files
+*.class
+target/
+out/
+logs/
+*.versionsBackup
+*.orig
 
 # BlueJ files
 *.ctxt
