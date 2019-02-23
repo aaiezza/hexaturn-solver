@@ -2,15 +2,14 @@ package com.shaba.hexaturn;
 
 import static java.lang.String.format;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
-import lombok.AccessLevel;
 import one.util.streamex.StreamEx;
 
 /**
@@ -18,65 +17,24 @@ import one.util.streamex.StreamEx;
  *
  */
 @lombok.Data
-@lombok.AllArgsConstructor ( access = AccessLevel.PRIVATE )
+@lombok.EqualsAndHashCode ( callSuper = true )
 @lombok.Builder ( toBuilder = true )
-public class HexSatelliteData implements org.hexworks.mixite.core.api.contract.SatelliteData
+public class HexSatelliteData extends AbstractSatelliteData
 {
-    // @formatter:off
-    public static final HexSatelliteData BORDER_HEX   = 
-            new HexSatelliteData( false, false, false, 0, ImmutableList.of() ) 
-            { @Override public String toString() { return "BORDER_HEX"; }
-            @Override
-            public HexSatelliteDataBuilder toBuilder()
-            {
-                return new HexSatelliteDataBuilder() {
-                    @Override
-                    public HexSatelliteData build()
-                    {
-                        return BORDER_HEX;
-                    }
-                };
-            }
-        };
-        // @formatter:on
+    @lombok.Builder.Default
+    private final boolean                 hasGoal             = false;
+    @lombok.Builder.Default
+    private final int                     blocksBeforeBlocked = 1;
+    private final ImmutableList<Occupant> occupants;
 
-    @lombok.Builder.Default
-    private final boolean                blockable           = true;
-    @lombok.Builder.Default
-    private final boolean                passable            = true;
-    @lombok.Builder.Default
-    private final boolean                hasGoal             = false;
-    @lombok.Builder.Default
-    private final int                    blocksBeforeBlocked = 1;
-    @lombok.Builder.Default
-    private final List<Occupant>         occupants           = Lists.newArrayList();
-
-    @Deprecated
-    public boolean getPassable()
+    private HexSatelliteData(
+        final boolean hasGoal,
+        final int blocksBeforeBlocked,
+        final List<Occupant> occupants )
     {
-        return isPassable();
-    }
-
-    public boolean isPassable()
-    {
-        return StreamEx.of( occupants ).anyMatch( Occupant::isPassable ) ||
-                ( passable && blocksBeforeBlocked > 0 );
-    }
-
-    public boolean canBlock()
-    {
-        return !occupants.isEmpty() ||
-                ( passable && blockable && blocksBeforeBlocked > 0 && !hasGoal );
-    }
-
-    @Override
-    public double getMovementCost()
-    {
-        return blocksBeforeBlocked > 0 ? 1.0f / blocksBeforeBlocked : Double.MAX_VALUE;
-    }
-
-    public List<Occupant> getOccupants() {
-        return Collections.unmodifiableList( occupants );
+        this.hasGoal = hasGoal;
+        this.blocksBeforeBlocked = blocksBeforeBlocked;
+        this.occupants = ImmutableList.copyOf( occupants );
     }
 
     public boolean hasGoal()
@@ -84,50 +42,19 @@ public class HexSatelliteData implements org.hexworks.mixite.core.api.contract.S
         return hasGoal;
     }
 
-    @Deprecated
-    public boolean getOpaque()
+    @SuppressWarnings ( "unchecked" )
+    public Either<HexSatelliteData, HexSatelliteData> block()
     {
-        return isOpaque();
+        if ( canBlock() )
+            return Either.left( this );
+        else
+        {
+            final int bbb = blocksBeforeBlocked > 0 ? blocksBeforeBlocked - 1 : 0;
+            return Either.right( toBuilder().blocksBeforeBlocked( bbb ).build() );
+        }
     }
 
-    public boolean isOpaque()
-    {
-        return false;
-    }
-
-    @Override
-    public void setPassable( final boolean passable )
-    { /* Immutable */ }
-
-    @Override
-    public void setOpaque( final boolean opaque )
-    { /* Immutable */ }
-
-    @Override
-    public void setMovementCost( final double movementCost )
-    { /* Immutable */ }
-
-    public boolean attractsEnemy()
-    {
-        return StreamEx.of( occupants ).anyMatch(
-            o -> o.getClass().isInstance( EnemyAttractingOccupant.class ) ) || hasGoal;
-    }
-
-    public boolean hasEnemy()
-    {
-        return occupants.stream().anyMatch( o -> o.getClass().isInstance( Enemy.class ) );
-    }
-
-    public HexSatelliteData block()
-    {
-        if ( hasGoal )
-            return toBuilder().build();
-
-        final int bbb = blocksBeforeBlocked > 0 ? blocksBeforeBlocked - 1 : 0;
-        return toBuilder().blocksBeforeBlocked( bbb ).build();
-    }
-
-    public HexSatelliteData removeEnemy(final Enemy enemy)
+    public HexSatelliteData removeEnemy( final Enemy enemy )
     {
         return toBuilder().clearExactOccupant( enemy ).build();
     }
@@ -136,12 +63,6 @@ public class HexSatelliteData implements org.hexworks.mixite.core.api.contract.S
     public String toString()
     {
         final StringBuilder out = new StringBuilder();
-
-        if ( !blockable )
-            out.append( "!b" );
-
-        if ( !passable )
-            out.append( "!p" );
 
         if ( blocksBeforeBlocked > 1 )
             out.append( format( "l%d;", blocksBeforeBlocked ) );
@@ -158,6 +79,8 @@ public class HexSatelliteData implements org.hexworks.mixite.core.api.contract.S
 
     public static class HexSatelliteDataBuilder
     {
+        private final List<Occupant> occupants = Lists.newArrayList();
+
         /**
          * Hide this version that takes a {@link List}.
          */
@@ -204,5 +127,4 @@ public class HexSatelliteData implements org.hexworks.mixite.core.api.contract.S
             return this;
         }
     }
-
 }
