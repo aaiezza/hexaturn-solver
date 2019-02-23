@@ -43,7 +43,7 @@ public class HexaturnBoardParser
     private HexaturnBoard applyConfiguration( final HexaturnBoardBuilder boardBuilder )
     {
         final Map<Integer, HexaturnSatelliteData> config = converter.get()
-                .convertBoardCode(width, height, boardCode);
+                .convertBoardCode( boardCode );
 
         boardBuilder.data( IntStream.range( 0, width * height )
             .mapToObj( hexIndex -> config.getOrDefault( hexIndex, BORDER_HEX ) )

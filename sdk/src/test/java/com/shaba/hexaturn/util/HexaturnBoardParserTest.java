@@ -25,7 +25,7 @@ public class HexaturnBoardParserTest
 
     private int width = 3;
     private int height = 5;
-    private String boardCode = "1:ef2;,3:l2;:9,10:G;!b,11:,12:!b,14:!b";
+    private String boardCode = "1:ef2;e3;,3:l2;:5,6::9,10:G;!b,11,12:!b,14:!b";
 
     @Before
     public void setup()

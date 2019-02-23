@@ -34,15 +34,15 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
     @lombok.AllArgsConstructor ( access = AccessLevel.PRIVATE )
     public enum OccupantCode
     {
-        ENEMY("e", code -> {
-            final boolean frozen = code.charAt( 0 ) == 'f';
-            final int movesPerTurn = Integer.parseInt( code.substring( frozen ? 1 : 0 ) );
+        ENEMY("e", enemyInfo -> {
+            final boolean frozen = enemyInfo.charAt( 0 ) == 'f';
+            final int movesPerTurn = Integer.parseInt( enemyInfo.substring( frozen ? 1 : 0 ) );
             return Enemy.builder()
                     .movesPerTurn( movesPerTurn )
                     .frozen( frozen )
                     .build();
         }),
-        DECOY_GOAL("D", code -> new DecoyGoal());
+        DECOY_GOAL("D", noCode -> new DecoyGoal());
 
         private final String code;
         private final Function<String, Occupant> occupantParser;
@@ -64,7 +64,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
     {
         private final int index;
         private final HexaturnSatelliteData data;
-        
+
         public static Stream<StringHex> parse( final String hexInfo )
         {
             final String [] hex = hexInfo.split( ":" );
@@ -75,7 +75,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
             final OfInt contents = ( hex.length > 1 ? hex[1] : "" ).chars().iterator();
             while ( contents.hasNext() )
             {
-                char c = (char) contents.next().intValue();
+                char c = (char) contents.nextInt();
                 final boolean hasAttribute = c != '!';
 
                 if ( !hasAttribute )
@@ -92,6 +92,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                 case 'X':
                     dataBuilder.blocksBeforeBlocked( 0 );
                     break;
+                /* Occupant codes */
                 default:
                     OccupantCode.parseCode( c )
                         .map( oc -> oc.makeOccupant( parseUntilSemicolon(contents) ) )
@@ -103,7 +104,7 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
                     .filter( h -> h.length > 2 )
                     .map( h -> h[2] )
                     .map( Integer::parseInt )
-                    .map( l -> l - index + 1 )
+                    .map( toIndex -> toIndex - index + 1 )
                     .orElse( 1 );
             final AtomicInteger indexCounter = new AtomicInteger( index );
             return StreamEx.generate( () -> new StringHex( indexCounter.getAndIncrement(), dataBuilder.build() ) ).limit( repeat );
@@ -164,16 +165,12 @@ public class HexaturnBoardStringConverter implements BoardStringConverter
      */
     @Override
     public Map<Integer, HexaturnSatelliteData> convertBoardCode(
-            final int width,
-            final int height,
             final String boardCode )
     {
-        return convertBoardCodeStream( width, height, boardCode ).toImmutableMap();
+        return convertBoardCodeStream( boardCode ).toImmutableMap();
     }
 
     public EntryStream<Integer, HexaturnSatelliteData> convertBoardCodeStream(
-            final int width,
-            final int height,
             final String boardCode )
     {
         return StreamEx.of( boardCode.split( "," ) )

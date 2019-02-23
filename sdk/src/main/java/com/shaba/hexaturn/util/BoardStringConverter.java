@@ -13,10 +13,7 @@ import com.shaba.hexaturn.HexaturnSatelliteData;
  */
 public interface BoardStringConverter
 {
-    public Map<Integer, HexaturnSatelliteData> convertBoardCode(
-            final int width,
-            final int height,
-            final String boardCode );
+    public Map<Integer, HexaturnSatelliteData> convertBoardCode(final String boardCode);
 
     public String convertBoardData(
             final int width,
