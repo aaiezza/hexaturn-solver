@@ -53,13 +53,14 @@ public class HexSatelliteData extends AbstractSatelliteData
         return wasNeverBlockable;
     }
 
+    @Deprecated
     public Either<HexSatelliteData, HexSatelliteData> block()
     {
         if ( canBlock() )
             return Either.left( this );
         else
         {
-            final int bbb = blocksBeforeBlocked > 0 ? blocksBeforeBlocked - 1 : 0;
+            final int bbb = getBlocksBeforeBlocked() > 0 ? getBlocksBeforeBlocked() - 1 : 0;
             return Either.right( toBuilder().blocksBeforeBlocked( bbb ).build() );
         }
     }
