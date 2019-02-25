@@ -32,12 +32,11 @@ public abstract class AbstractSatelliteData
     }
 
     /**
-     * A hex cannot be blocked if:<br/>
-     * <br/>
+     * A hex can be blocked if:<br/>
      * <ul>
-     * <li>There are occupants in it,</li>
-     * <li>it is already blocked,</li>
-     * <li>or if a goal is present at the hex</li>
+     * <li>There are <b>no occupants</b> in it,</li>
+     * <li>it is <b>not already blocked</b>,</li>
+     * <li>or if a <b>goal is not present</b> at the hex</li>
      * </ul>
      * 
      * @return whether or not this hex can be blocked.
