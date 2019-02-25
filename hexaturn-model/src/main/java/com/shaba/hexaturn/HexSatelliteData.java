@@ -25,24 +25,34 @@ public class HexSatelliteData extends AbstractSatelliteData
     private final boolean                 hasGoal             = false;
     @lombok.Builder.Default
     private final int                     blocksBeforeBlocked = 1;
+    @lombok.Builder.Default
+    private final boolean                 wasNeverBlockable   = false;
     private final ImmutableList<Occupant> occupants;
 
     private HexSatelliteData(
         final boolean hasGoal,
         final int blocksBeforeBlocked,
+        final boolean wasNeverBlockable,
         final List<Occupant> occupants )
     {
         this.hasGoal = hasGoal;
         this.blocksBeforeBlocked = blocksBeforeBlocked;
+        this.wasNeverBlockable = wasNeverBlockable;
         this.occupants = ImmutableList.copyOf( occupants );
     }
 
+    @Override
     public boolean hasGoal()
     {
         return hasGoal;
     }
 
-    @SuppressWarnings ( "unchecked" )
+    @Override
+    public boolean wasNeverBlockable()
+    {
+        return wasNeverBlockable;
+    }
+
     public Either<HexSatelliteData, HexSatelliteData> block()
     {
         if ( canBlock() )
@@ -63,6 +73,9 @@ public class HexSatelliteData extends AbstractSatelliteData
     public String toString()
     {
         final StringBuilder out = new StringBuilder();
+
+        if ( wasNeverBlockable )
+            out.append( "!b" );
 
         if ( blocksBeforeBlocked > 1 )
             out.append( format( "l%d;", blocksBeforeBlocked ) );

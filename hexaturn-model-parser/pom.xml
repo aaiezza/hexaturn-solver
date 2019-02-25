@@ -11,33 +11,29 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>hexaturn-model</artifactId>
-    <name>hexaturn-model</name>
+    <artifactId>hexaturn-model-parser</artifactId>
+    <name>hexaturn-model-parser</name>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.Hexworks.mixite</groupId>
-            <artifactId>mixite.core-jvm</artifactId>
+            <groupId>org.shaba.hexaturn</groupId>
+            <artifactId>hexaturn-model</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>one.util</groupId>
-            <artifactId>streamex</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.vavr</groupId>
-            <artifactId>vavr</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
         </dependency>
     </dependencies>
 </project>

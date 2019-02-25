@@ -1,12 +1,7 @@
 package com.shaba.hexaturn;
 
-import static io.vavr.control.Either.left;
-
 import com.google.common.collect.ImmutableList;
 
-import io.vavr.control.Either;
-import io.vavr.control.Either.Left;
-import io.vavr.control.Either.Right;
 import one.util.streamex.StreamEx;
 
 /**
@@ -17,14 +12,15 @@ import one.util.streamex.StreamEx;
 public abstract class AbstractSatelliteData
         implements org.hexworks.mixite.core.api.contract.SatelliteData
 {
+    private static final ImmutableList<Occupant> NO_OCCUPANTS = ImmutableList.of();
     // @formatter:off
     public static final AbstractSatelliteData BORDER_HEX   = 
         new AbstractSatelliteData() {
             @Override public String toString() { return "BORDER_HEX"; }
             @Override public int getBlocksBeforeBlocked() { return 0; }
-            @Override public ImmutableList<Occupant> getOccupants() { return ImmutableList.of(); }
+            @Override public ImmutableList<Occupant> getOccupants() { return NO_OCCUPANTS; }
             @Override public boolean hasGoal() { return false; }
-            @Override public Either<AbstractSatelliteData, AbstractSatelliteData> block() { return left( this ); }
+            @Override public boolean wasNeverBlockable() { return true; }
         };
     // @formatter:on
 
@@ -63,23 +59,6 @@ public abstract class AbstractSatelliteData
     }
 
     /**
-     * Perform a "block" action on this hex.<br/>
-     * If the hex <b>cannot</b> be blocked via the output of
-     * {@link AbstractSatelliteData#canBlock()}, return this instance of the
-     * {@link AbstractSatelliteData}.<br/>
-     * Otherwise, proceed to create a new, immutable instance of
-     * {@link AbstractSatelliteData} where this hex is not blocked preferably
-     * with a {@link AbstractSatelliteData#getBlocksBeforeBlocked()
-     * blocksBeforeBlocked} value of 1 less than this satellite data object.
-     * 
-     * @return {@link Either} the same instance of the SatelliteData as an
-     *         {@link Left Either.Left} if the hex could not be blocked, or an
-     *         {@link Right Either.Right} with SatelliteData returning 1 less
-     *         {@code blocksBeforeBlocked}.
-     */
-    public abstract <D extends AbstractSatelliteData> Either<D, D> block();
-
-    /**
      * A hex sometimes must be "blocked" more than once to be considered fully
      * impassable by {@link Occupant occupants} that may wish to enter this hex.
      * 
@@ -89,9 +68,21 @@ public abstract class AbstractSatelliteData
     public abstract int getBlocksBeforeBlocked();
 
     /**
+     * This trait notably refers to whether or not a hex was ever blockable in
+     * the first place. In the game, these are represented as white hexes.
+     * 
+     * @return whether or not the hex was ever blockable in the first place.
+     */
+    public abstract boolean wasNeverBlockable();
+
+    /**
      * The cost of enter into this hex that may be made less severe from an
      * enemies perspective if more "blocks" are required to prevent this hex
-     * from being {@link AbstractSatelliteData#isBlocked() passable}.
+     * from being {@link AbstractSatelliteData#isBlocked() passable}.<br/>
+     * <br/>
+     * This movement cost however, notably ignores the state of surrounding
+     * hexes, which should be accounted for when calculating enemy movements
+     * which would more closely replicate the game.
      */
     @Override
     public double getMovementCost()

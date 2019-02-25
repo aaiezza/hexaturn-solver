@@ -22,7 +22,7 @@ public interface IMove <T>
 {
     public Set<Step<T>> getSteps();
 
-    public static abstract class Step <T> implements VerifiedStepApplier<T, Step<T>>
+    public abstract static class Step <T> implements VerifiedStepApplier<T, Step<T>>
     {
         final Either<IllegalStepException, T> apply( final T t )
         {
@@ -39,7 +39,7 @@ public interface IMove <T>
         {
             if ( step != this )
                 return Validation.invalid( Vector.of( new IllegalStepException( step,
-                        "Step being verified needs to be identicle" ) ) );
+                        "Step being verified needs to be identical" ) ) );
             return verifyStep( board );
         }
 
