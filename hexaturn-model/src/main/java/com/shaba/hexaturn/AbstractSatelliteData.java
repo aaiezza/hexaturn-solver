@@ -2,6 +2,9 @@ package com.shaba.hexaturn;
 
 import com.google.common.collect.ImmutableList;
 
+import io.vavr.control.Either;
+import io.vavr.control.Either.Left;
+import io.vavr.control.Either.Right;
 import one.util.streamex.StreamEx;
 
 /**
@@ -20,6 +23,7 @@ public abstract class AbstractSatelliteData
             @Override public int getBlocksBeforeBlocked() { return 0; }
             @Override public ImmutableList<Occupant> getOccupants() { return NO_OCCUPANTS; }
             @Override public boolean hasGoal() { return false; }
+            @Override public Either<AbstractSatelliteData, AbstractSatelliteData> block() { return Either.left(this); }
             @Override public boolean wasNeverBlockable() { return true; }
         };
     // @formatter:on
@@ -45,6 +49,23 @@ public abstract class AbstractSatelliteData
     {
         return getOccupants().isEmpty() || ( !isBlocked() && !hasGoal() );
     }
+
+    /**
+     * Perform a "block" action on this hex.<br/>
+     * If the hex <b>cannot</b> be blocked via the output of
+     * {@link AbstractSatelliteData#canBlock()}, return this instance of the
+     * {@link AbstractSatelliteData}.<br/>
+     * Otherwise, proceed to create a new, immutable instance of
+     * {@link AbstractSatelliteData} where this hex is not blocked preferably
+     * with a {@link AbstractSatelliteData#getBlocksBeforeBlocked()
+     * blocksBeforeBlocked} value of 1 less than this satellite data object.
+     * 
+     * @return {@link Either} the same instance of the SatelliteData as an
+     *         {@link Left Either.Left} if the hex could not be blocked, or an
+     *         {@link Right Either.Right} with SatelliteData returning 1 less
+     *         {@code blocksBeforeBlocked}.
+     */
+    public abstract <D extends AbstractSatelliteData> Either<D, D> block();
 
     /**
      * A hex is blocked when the number of "blocks" needing to fully block it

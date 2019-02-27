@@ -53,6 +53,7 @@ public class HexSatelliteData extends AbstractSatelliteData
         return wasNeverBlockable;
     }
 
+    @SuppressWarnings ( "unchecked" )
     @Deprecated
     public Either<HexSatelliteData, HexSatelliteData> block()
     {

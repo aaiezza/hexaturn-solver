@@ -14,7 +14,7 @@
         <module>service</module>
         <module>hexaturn-model</module>
         <module>hexaturn-model-parser</module>
-        <module>hexaturn-utilities</module>
+        <module>hexaturn-event-handling</module>
     </modules>
 
     <repositories>
